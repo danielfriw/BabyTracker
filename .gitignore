@@ -1,2 +1,8 @@
-# created by virtualenv automatically
-*
+# Ignore virtualenv
+venv/
+
+# Ignore compiled Python files
+__pycache__/
+
+# Ignore environment variables file (if you have one)
+.env

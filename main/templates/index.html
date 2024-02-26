@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+    <head>
+        <link rel="stylesheet" href="../static/index_style.css">
+        <title>Baby Tracker</title>
+    </head>
+
+    {%  if current_user.is_authenticated %}
+        <form method="post" action="/events/create_event">
+            <div>
+                <button type="submit" name="activity" value="feeding" class="feeding"><i class="fa-solid fa-utensils fa-2xl"></i></button>
+                <button type="submit" name="activity" value="diaper" class="diaper"><i class="fa-solid fa-poo fa-2xl"></i></button>
+                <button type="submit" name="activity" value="nap" class="nap"><i class="fa-solid fa-bed fa-2xl"></i></button>
+                <button type="submit" name="activity" value="medicine" class="medicine"><i class="fa-solid fa-stethoscope fa-2xl"></i></button>
+            </div>
+        </form>
+
+
+        <h3>Activities</h3>
+        <ul>
+            {% for event in events %}
+            <li>
+                <div class="column">
+                    {% if event.activity == "feeding" %}
+                        <i class="fa-solid fa-utensils"></i> {{ event.activity }}
+                    {% elif event.activity == "diaper" %}
+                        <i class="fa-solid fa-poo"></i> {{ event.activity }}
+                    {% elif event.activity == "nap" %}
+                        <i class="fa-solid fa-bed"></i> {{ event.activity }}
+                    {% elif event.activity == "medicine" %}
+                        <i class="fa-solid fa-stethoscope"></i> {{ event.activity }}
+                    {% endif %}
+                </div>
+                <div class="column">{{ event.created_at }}</div>
+                <div class="column">{{ event.comment }}</div>
+                <form method="get">
+                    <button class="side_button delete_button" type="submit" formaction="/events/delete/{{ event.id }}">Delete</button>
+                    <button class="side_button update_button" type="submit" formaction="/events/update/{{ event.id }}">Update</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h2>Welcome to Baby Tracker</h2>
+        <p>Log in to start tracking your baby's activities.</p>
+    {% endif %}
+{% endblock %}

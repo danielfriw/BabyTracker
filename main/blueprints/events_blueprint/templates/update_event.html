@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('events.static', filename='event_comment_style.css') }}">
+    <title>Baby Tracker</title>
+</head>
+<body>
+    <h2>Edit Event Comment</h2>
+    <form method="post" action="{{ url_for('events.update_event', id=event.id) }}">
+        <label for="comment">Comment:</label>
+        <input type="text" id="comment" name="comment" value="{{ event.comment }}" required>
+        <button type="submit">Update Comment</button>
+    </form>
+</body>
+{% endblock %}

@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
+
     <head>
-        <link rel="stylesheet" href="../static/index_style.css">
         <title>Baby Tracker</title>
+        <link rel="stylesheet" href="{{ url_for('index.static', filename='index.css') }}">
     </head>
 
     {%  if current_user.is_authenticated %}
-        <form method="post" action="/events/create_event">
+        <form method="post" action="{{ url_for('events.create_event') }}">
             <div>
                 <button type="submit" name="activity" value="feeding" class="feeding"><i class="fa-solid fa-utensils fa-2xl"></i></button>
                 <button type="submit" name="activity" value="diaper" class="diaper"><i class="fa-solid fa-poo fa-2xl"></i></button>

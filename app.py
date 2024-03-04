@@ -14,6 +14,7 @@ from main.utils.baby_context_processor_for_navbar_dropdown_list import baby_cont
 with app.app_context():
     db.create_all()
 
+
 # Context processors: these run before the template is rendered
 # We use it here to render the users babies in the navbar dropdown list
 app.context_processor(baby_context_processor_for_navbar_dropdown_list)

@@ -1,28 +1,24 @@
-from flask import Blueprint, render_template, request, flash, session
+from flask import Blueprint, render_template, request, flash, session, redirect, url_for
 from flask_login import login_required, current_user
 from main import db, app
 from main.blueprints.height_percentile_blueprint.models import TestResults
 from main.utils.percentiles_calc import percentile_calc, graph_data_boys, graph_data_girls
 
-
 height_percentile_blueprint = Blueprint('height_percentile', __name__, url_prefix='/height_percentile', static_folder='static', template_folder='templates')
 
+
+TEST_NAME = 'height_percentile'
 
 @app.route('/height_percentile', methods=['GET', 'POST'])
 @login_required
 def height_percentile():
-    test_name = 'height_percentile'
 
     if request.method == 'POST':
         age_in_months, length = get_baby_measurements_from_form()
         current_percentile_result = percentile_calc(session['baby_gender'], age_in_months, length)
         check_is_valid_result(current_percentile_result) # TODO: change to try and except
 
-        test_result = (TestResults.query.filter_by(user_id=current_user.id)
-                       .filter_by(baby_id=session['baby_id'])
-                       .filter_by(test_name=test_name)
-                       .filter_by(age_in_months=age_in_months)
-                       .first())
+
         if test_result:
             # update the test results
             test_result.length = length
@@ -73,7 +69,7 @@ def check_is_valid_result(current_percentile_result):
     if is_valid_current_percentile_result(current_percentile_result):
         return
     flash_error_message_for_invalid_current_percentile_result(current_percentile_result)
-    return render_percentile_graph_with_only_previous_results()
+    return redirect(url_for('height_percentile'))
 
 def flash_error_message_for_invalid_current_percentile_result(current_percentile_result):
     """
@@ -97,7 +93,40 @@ def is_valid_current_percentile_result(current_percentile_result):
     :param current_percentile_result: the current percentile result
     :return: True if the current percentile result is valid, False otherwise
     """
-    return current_percentile_result is None or current_percentile_result in [0, 100]
+    if current_percentile_result is None or current_percentile_result in [0, 100]:
+        return False
+    return True
+
+def add_test_result_to_db(test_result, current_percentile_result):
+    """
+    Add the test result to the database.
+    If the test result already exists, update the test result.
+    :param test_result: the test result
+    :param current_percentile_result: the current percentile result
+    """
+    test_result = (TestResults.query.filter_by(user_id=current_user.id)
+                   .filter_by(baby_id=session['baby_id'])
+                   .filter_by(test_name=test_name)
+                   .filter_by(age_in_months=age_in_months)
+                   .first())
+
+    if test_result:
+        # update the test results
+        test_result.length = length
+        test_result.percentile_result = current_percentile_result
+
+    else:
+        # add new test results
+        test_result = TestResults(user_id=current_user.id,
+                                  baby_id=session['baby_id'],
+                                  test_name='height_percentile',
+                                  age_in_months=age_in_months,
+                                  length=length,
+                                  percentile_result=current_percentile_result)
+        db.session.add(test_result)
+
+    db.session.commit()
+    return
 
 def render_percentile_graph_with_only_previous_results():
     """

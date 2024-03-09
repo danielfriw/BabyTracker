@@ -7,11 +7,14 @@ def percentile_calc(gender: str, age_in_months: int, length: float):
     We calculate the z-score using the formula: z = ((length / M) ** L - 1) / (L * S)
     z_score_percentile_table is a dictionary containing the z-score and the corresponding percentile.
 
-    :param: gender: str: babys gender as 'f' or 'm'
+    :param: gender: str: baby's gender as 'f' or 'm'
     :param: age_in_months: int: baby's age in months
     :param: length: float: baby's length in cm
     """
     lms_data = boys_length_for_age if gender == 'm' else girls_length_for_age
+
+    if age_in_months < 0 or age_in_months > 24:
+        raise ValueError('Age is out of range. Please enter a valid age.')
 
     l = lms_data['Power [L]'][age_in_months]
     m = lms_data['Median [M]'][age_in_months]
@@ -21,10 +24,11 @@ def percentile_calc(gender: str, age_in_months: int, length: float):
 
     z_row = int(zscore * 10) / 10
     z_col = int(zscore * 100 - int(zscore * 10) * 10)
+
     if z_row < -3.0:
-        return 0
+        raise ValueError('Height is too low for given age range. Please enter a valid height.')
     if z_row > 3.0:
-        return 100
+        raise ValueError('Height too high for given age range. Please enter a valid height.')
 
     percentile = z_score_percentile_table[z_row][z_col]
     return percentile

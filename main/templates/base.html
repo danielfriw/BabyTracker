@@ -21,7 +21,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-{#    <link rel="stylesheet" href="../static/index_style.css">#}
+    {#    <link rel="stylesheet" href="../static/index_style.css">#}
     <title>Baby Tracker</title>
 </head>
 
@@ -51,8 +51,8 @@
                         <a class="dropdown-item" href="{{ url_for('baby.add_baby') }}">Add Baby</a>
                     </div>
                 </div>
-                <a href="{{ url_for('index') }}" class="nav-item nav-link">Activities</a>
-                <a href="{{ url_for('generate_length_percentile_graph') }}" class="nav-item nav-link">Percentile</a>
+                <a href="{{ url_for('index') }}" class="nav-item nav-link">Events</a>
+                <a href="{{ url_for('get_generate_length_percentile_graph') }}" class="nav-item nav-link">Percentile</a>
                 <a href="{{ url_for('auth.logout') }}" class="nav-item nav-link">Logout</a>
 
 
@@ -76,7 +76,7 @@
 {% with messages = get_flashed_messages() %}
     {% if messages %}
         <div class="alert alert-warning" role="alert">
-          {{ messages[0] }} <a href={{ request.url }} class="alert-link">      x</a>
+            {{ messages[0] }} <a href={{ request.url }} class="alert-link"> x</a>
         </div>
     {% endif %}
 {% endwith %}

@@ -6,39 +6,45 @@
         <link rel="stylesheet" href="{{ url_for('index.static', filename='index.css') }}">
     </head>
 
-    {%  if current_user.is_authenticated %}
-        <form method="post" action="{{ url_for('events.create_event') }}">
+    {% if current_user.is_authenticated %}
+        <form method="get" action="{{ url_for('events.get_create_event') }}">
             <div>
-                <button type="submit" name="activity" value="feeding" class="feeding"><i class="fa-solid fa-utensils fa-2xl"></i></button>
-                <button type="submit" name="activity" value="diaper" class="diaper"><i class="fa-solid fa-poo fa-2xl"></i></button>
-                <button type="submit" name="activity" value="nap" class="nap"><i class="fa-solid fa-bed fa-2xl"></i></button>
-                <button type="submit" name="activity" value="medicine" class="medicine"><i class="fa-solid fa-stethoscope fa-2xl"></i></button>
+                <button type="submit" name="activity" value="feeding" class="feeding"><i
+                        class="fa-solid fa-utensils fa-2xl"></i></button>
+                <button type="submit" name="activity" value="diaper" class="diaper"><i
+                        class="fa-solid fa-poo fa-2xl"></i></button>
+                <button type="submit" name="activity" value="nap" class="nap"><i class="fa-solid fa-bed fa-2xl"></i>
+                </button>
+                <button type="submit" name="activity" value="medicine" class="medicine"><i
+                        class="fa-solid fa-stethoscope fa-2xl"></i></button>
             </div>
         </form>
 
-
-        <h3>Activities</h3>
         <ul>
             {% for event in events %}
-            <li>
-                <div class="column">
-                    {% if event.activity == "feeding" %}
-                        <i class="fa-solid fa-utensils"></i> {{ event.activity }}
-                    {% elif event.activity == "diaper" %}
-                        <i class="fa-solid fa-poo"></i> {{ event.activity }}
-                    {% elif event.activity == "nap" %}
-                        <i class="fa-solid fa-bed"></i> {{ event.activity }}
-                    {% elif event.activity == "medicine" %}
-                        <i class="fa-solid fa-stethoscope"></i> {{ event.activity }}
-                    {% endif %}
-                </div>
-                <div class="column">{{ event.created_at }}</div>
-                <div class="column">{{ event.comment }}</div>
-                <form method="get">
-                    <button class="side_button delete_button" type="submit" formaction="/events/delete/{{ event.id }}">Delete</button>
-                    <button class="side_button update_button" type="submit" formaction="/events/update/{{ event.id }}">Update</button>
-                </form>
-            </li>
+                <li>
+                    <div class="column">
+                        {% if event.activity == "feeding" %}
+                            <i class="fa-solid fa-utensils"></i> {{ event.activity }}
+                        {% elif event.activity == "diaper" %}
+                            <i class="fa-solid fa-poo"></i> {{ event.activity }}
+                        {% elif event.activity == "nap" %}
+                            <i class="fa-solid fa-bed"></i> {{ event.activity }}
+                        {% elif event.activity == "medicine" %}
+                            <i class="fa-solid fa-stethoscope"></i> {{ event.activity }}
+                        {% endif %}
+                    </div>
+                    <div class="column">{{ event.created_at }}</div>
+                    <div class="column">{{ event.comment }}</div>
+                    <form method="get">
+                        <button class="side_button delete_button" type="submit"
+                                formaction="/events/delete/{{ event.id }}">Delete
+                        </button>
+                        <button class="side_button update_button" type="submit"
+                                formaction="/events/update/{{ event.id }}">Update
+                        </button>
+                    </form>
+                </li>
             {% endfor %}
         </ul>
     {% else %}

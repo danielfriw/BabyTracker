@@ -1,8 +1,11 @@
-from flask import Blueprint, render_template, redirect, url_for, session
+from flask import Blueprint, redirect, url_for
 from flask_login import login_required, current_user
+
 from main import app
-from main.blueprints.events_blueprint.models import Event
 from main.blueprints.baby_blueprint.models import Baby
+from main.blueprints.baby_blueprint.services import set_baby_data_in_session
+from main.blueprints.index_blueprint.services import is_a_baby_assigned_to_session, does_user_have_babies, \
+    render_index_page_with_all_events
 
 index_blueprint = Blueprint('index', __name__, url_prefix='/', static_folder='static', template_folder='templates',
                             static_url_path='/main/blueprints/index_blueprint/static')
@@ -11,16 +14,11 @@ index_blueprint = Blueprint('index', __name__, url_prefix='/', static_folder='st
 @app.route('/')
 @login_required
 def index():
-    if session.get('baby_name') is None:
-        babies = Baby.query.filter_by(user_id=current_user.id).all()
-        if len(babies) > 0:
-            session['baby_name'] = babies[0].name
-            session["baby_gender"] = babies[0].gender
-            session['baby_id'] = babies[0].id
-        else:
-            return redirect(url_for('baby.add_baby'))
+    if not does_user_have_babies():
+        return redirect(url_for('baby.add_baby'))
 
-    user_id = current_user.id
-    events = Event.query.filter_by(user_id=user_id).filter_by(baby_name=session['baby_name']).order_by(
-        Event.created_at.desc()).all()
-    return render_template('index.html', events=events)
+    if not is_a_baby_assigned_to_session():
+        first_user_baby = Baby.query.filter_by(user_id=current_user.id).first()
+        set_baby_data_in_session(first_user_baby)
+
+    return render_index_page_with_all_events()

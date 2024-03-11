@@ -1,5 +1,5 @@
-
 from main import db
+
 
 class Baby(db.Model):
     __tablename__ = 'baby'

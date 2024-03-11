@@ -1,5 +1,7 @@
 from flask_login import current_user
+
 from main.blueprints.baby_blueprint.models import Baby
+
 
 def baby_context_processor_for_navbar_dropdown_list():
     """

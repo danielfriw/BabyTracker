@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Length Percentile</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+        <link rel="stylesheet"
+              href="{{ url_for('length_percentile_graph.static', filename='length_percentile_graph.css') }}">
+
+    </head>
+    <body>
+    <form method="post" action="{{ url_for('post_generate_length_percentile_graph') }}">
+
+        <div class="input-container">
+
+            <div>
+                <label for="age_in_months">Age:</label>
+                <input type="number" id="age_in_months" name="age_in_months" placeholder="Enter age in months" required>
+            </div>
+
+            <div>
+                <label for="length">Length:</label>
+                <input type="number" id="length" name="length" step="0.01" placeholder="Enter length in CM" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submit-btn">Submit</button>
+        </div>
+    </form>
+
+    <div>
+        {% if current_age %}
+            <p>Percentile: {{ all_tests_results_dict[current_age]['percentile_result'] }}</p>
+        {% else %}
+            <p>Enter age and length measurement to get results<p>
+        {% endif %}
+    </div>
+
+    <canvas id="myChart" width="800" height="300"></canvas>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        {% if current_age  %}
+            var currentResultData = [{
+                x: {{ current_age }}
+                , y: {{ all_tests_results_dict[current_age]['length'] }}
+                , pointLabel: 'Percentile: {{ all_tests_results_dict[current_age]['percentile_result'] }}'
+            }];
+        {% else %}
+            var currentResultData = [];
+        {% endif %}
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ graph_background_data['x_axis_months'] | safe }},
+                datasets: [{
+                    label: '2nd Percentile',
+                    data: {{ graph_background_data['lower_percentile_line_values'] | safe }},
+                    fill: true,
+                    backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                    borderColor: 'rgba(255,0,0,0.6)',
+                    borderWidth: 1,
+                    lineTension: 0.1,
+                    pointRadius: 0
+                },
+                    {
+                        label: '98th Percentile',
+                        data: {{ graph_background_data['upper_percentile_line_values'] | safe }},
+                        fill: true,
+                        backgroundColor: 'rgb(255,255,255, 0.5)',
+                        borderColor: 'rgba(255,0,0,0.6)',
+                        borderWidth: 1,
+                        lineTension: 0.1,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Current Result',
+                        data: currentResultData,
+                        backgroundColor: 'rgb(255,125,96)',
+                        borderColor: 'rgb(255,125,96)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        type: 'scatter'
+                    },
+                    {
+                        label: 'Previous Results',
+                        data: [
+                            {% for age_in_month, test_results in all_tests_results_dict.items() if age_in_month != current_age %}
+                                {
+                                    x: {{ age_in_month }},
+                                    y: {{ test_results['length'] }},
+                                    label: 'Percentile: {{ test_results['percentile_result'] }}'
+                                },
+                            {% endfor %}
+                        ],
+                        backgroundColor: 'rgba(0,79,255,0.18)',
+                        borderColor: 'rgba(0,79,255,0.18)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        type: 'scatter'
+                    }
+                ]
+            },
+            options: {
+                resposive: false,
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Age In Months'
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Length (CM)'
+                        },
+                        ticks: {
+                            beginAtZero: false
+                        }
+                    }]
+                },
+                legend: {
+                    display: false
+                },
+                backgroundColor: 'rgba(220, 220, 220, 0.2)'
+            }
+        });
+    </script>
+    </body>
+{% endblock %}

@@ -1,10 +1,13 @@
+from datetime import datetime
+
 from flask import Blueprint, request
 from flask_restful import Resource, Api
-from datetime import datetime
+
 from main import db
 from main.blueprints.baby_blueprint.models import Baby
 
-api_baby_blueprint = Blueprint('api_baby', __name__, url_prefix='/api/baby', static_folder='static', template_folder='templates')
+api_baby_blueprint = Blueprint('api_baby', __name__, url_prefix='/api/baby', static_folder='static',
+                               template_folder='templates')
 api = Api(api_baby_blueprint)
 
 

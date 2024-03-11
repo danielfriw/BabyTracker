@@ -1,6 +1,7 @@
+from datetime import datetime
 
 from main import db
-from datetime import datetime
+
 
 class Event(db.Model):
     __tablename__ = 'event'

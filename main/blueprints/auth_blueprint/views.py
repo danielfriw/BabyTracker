@@ -1,68 +1,75 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required
+from wtforms import ValidationError
 
-from main import db
 from main.blueprints.auth_blueprint.forms import LoginForm, RegistrationForm
-from main.blueprints.auth_blueprint.models import User
-from main.blueprints.baby_blueprint.models import Baby
+from main.blueprints.auth_blueprint.services import get_user_from_db_by_email, \
+    check_registration_form_submission_is_valid, \
+    check_login_form_submission_is_valid, add_user_to_db, remove_baby_data_from_session
 
 auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth', static_folder='static', template_folder='templates')
 
 
-@auth_blueprint.route('/login', methods=['GET', 'POST'])
-def login():
+@auth_blueprint.route('/login', methods=['GET'])
+def get_login():
+    """
+    Display the login form.
+    :return: render the login page
+    """
     form = LoginForm()
-
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-
-        if user:
-            if user.check_password(form.password.data) and user is not None:
-                login_user(user)
-
-                baby = Baby.query.filter_by(user_id=user.id).first()
-                if not baby:
-                    return redirect(url_for('baby.add_baby'))
-
-                return redirect(url_for('index'))
-
-            else:
-                flash('Password incorrect')
-                return redirect(url_for('auth.login'))
-
-        else:
-            flash('User does not exist')
-            return redirect(url_for('auth.login'))
-
     return render_template('login.html', form=form)
 
 
-@auth_blueprint.route('/register', methods=['GET', 'POST'])
-def register():
+@auth_blueprint.route('/login', methods=['POST'])
+def post_login():
+    """
+    Log in the user if the form submission is valid.
+    :return: redirect to the index page if the login is successful, otherwise redirect to the login page.
+    """
+    form = LoginForm()
+    try:
+        check_login_form_submission_is_valid(form)
+        login_user(get_user_from_db_by_email(email=form.email.data))
+    except ValueError as ve:
+        flash(str(ve))
+        return redirect(url_for('auth.get_login'))
+    return redirect(url_for('index'))
+
+
+@auth_blueprint.route('/register', methods=['GET'])
+def get_register():
+    """
+    Display the registration form.
+    :return: render the registration page
+    """
     form = RegistrationForm()
-    if form.validate_on_submit():
-
-        if User.query.filter_by(email=form.email.data).first():
-            flash('Email already exists')
-            return redirect(url_for('auth.register'))
-
-        if User.query.filter_by(username=form.username.data).first():
-            flash('Username already exists')
-            return redirect(url_for('auth.register'))
-
-        user = User(email=form.email.data, username=form.username.data, password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('auth.login'))
     return render_template('register.html', form=form)
+
+
+@auth_blueprint.route('/register', methods=['POST'])
+def post_register():
+    """
+    Register the user if the form submission is valid.
+    :return: redirect to the login page if the registration is successful, otherwise redirect to the registration page.
+    """
+    form = RegistrationForm(request.form)
+
+    try:
+        check_registration_form_submission_is_valid(form)
+        add_user_to_db(form)
+    except ValidationError as ve:
+        flash(str(ve))
+        return redirect(url_for('auth.get_register'))
+
+    flash('You have successfully registered')
+    return redirect(url_for('auth.get_login'))
 
 
 @auth_blueprint.route('/logout')
 @login_required
 def logout():
     logout_user()
-    session.pop('baby_name', None)
-    session.pop('baby_gender', None)
-    session.pop('baby_id', None)
+    remove_baby_data_from_session()
     flash('You have been logged out')
     return redirect(url_for('index'))
+

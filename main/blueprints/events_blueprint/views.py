@@ -3,7 +3,8 @@ from flask_login import login_required, current_user
 
 from main import db
 from main.blueprints.events_blueprint.models import Event
-from main.blueprints.events_blueprint.services import event_not_found_error_message, get_event_activity_from_index_buttons, get_event_by_id
+from main.blueprints.events_blueprint.services import event_not_found_error_message, \
+    get_event_activity_from_index_buttons, get_event_by_id
 
 events_blueprint = Blueprint('events', __name__, url_prefix='/events', static_folder='static',
                              template_folder='templates')

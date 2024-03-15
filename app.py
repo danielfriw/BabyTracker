@@ -3,7 +3,7 @@ from main.blueprints.baby_blueprint.views import baby_blueprint
 from main.blueprints.auth_blueprint.views import auth_blueprint
 from main.blueprints.events_blueprint.views import events_blueprint
 from main.blueprints.length_percentile_graph_blueprint.views import length_percentile_graph_blueprint
-from main.blueprints.api_baby_blueprint.views import api_baby_blueprint
+from main.blueprints.api_baby_blueprint.baby_api import api_baby_blueprint
 from main import app, db
 from main.utils.baby_context_processor_for_navbar_dropdown_list import baby_context_processor_for_navbar_dropdown_list
 

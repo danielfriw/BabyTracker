@@ -1,8 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from flask_login import login_required, current_user
+from flask import request
 
-from main import db
 from main.blueprints.events_blueprint.models import Event
+
 
 def event_not_found_error_message():
     return "Event not found."

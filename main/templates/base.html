@@ -48,7 +48,7 @@
                                href="{{ url_for('baby.set_current_baby', baby_id=baby.id) }}">{{ baby.name }}</a>
                         {% endfor %}
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ url_for('baby.add_baby') }}">Add Baby</a>
+                        <a class="dropdown-item" href="{{ url_for('baby.get_add_baby') }}">Add Baby</a>
                     </div>
                 </div>
                 <a href="{{ url_for('index') }}" class="nav-item nav-link">Events</a>
@@ -59,8 +59,8 @@
                 </div>
             {% else %}
                 <div class="navbar-nav">
-                    <a href="{{ url_for('auth.login') }}" class="nav-item nav-link">Login</a>
-                    <a href="{{ url_for('auth.register') }}" class="nav-item nav-link">Register</a>
+                    <a href="{{ url_for('auth.get_login') }}" class="nav-item nav-link">Login</a>
+                    <a href="{{ url_for('auth.get_register') }}" class="nav-item nav-link">Register</a>
                 </div>
             {% endif %}
     </div>

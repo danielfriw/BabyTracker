@@ -15,7 +15,7 @@ index_blueprint = Blueprint('index', __name__, url_prefix='/', static_folder='st
 @login_required
 def index():
     if not does_user_have_babies():
-        return redirect(url_for('baby.add_baby'))
+        return redirect(url_for('baby.get_add_baby'))
 
     if not is_a_baby_assigned_to_session():
         first_user_baby = Baby.query.filter_by(user_id=current_user.id).first()

@@ -36,5 +36,5 @@ if __name__ == "__main__":
     #                     data={"gender": "f", "dob": "2022-06-01"},
     #                     headers={"Content-Type": "application/json"})
     # make_api_delete_call("http://127.0.0.1:5000/api/baby/1/Shalom")
-    make_api_get_call("http://127.0.0.1:5000/api/length_percentile_calculator/m/1/50")
+    make_api_get_call("http://127.0.0.1:5000/api/length_percentile_calculator/f/23/90")
 

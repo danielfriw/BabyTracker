@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 
 
@@ -41,9 +43,19 @@ def get_lms_parameters_data_by_gender(gender: str):
     This function returns the LMS parameters depending on the gender of the baby.
     """
     if gender == 'm':
-        return pd.read_csv('static_data/lms_parameters_male.csv').to_dict()
+        csv_file = get_static_data_file_path('lms_parameters_male.csv')
     else:
-        return pd.read_csv('static_data/lms_parameters_female.csv').to_dict()
+        csv_file = get_static_data_file_path('lms_parameters_female.csv')
+
+    return pd.read_csv(csv_file).to_dict()
+
+
+def get_static_data_file_path(file_name: str):
+    """
+    This function returns the path of the static data file.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(script_dir, 'static_data', file_name)
 
 
 def extract_percentile_from_zscore_table(zscore: float):
@@ -90,6 +102,7 @@ def get_z_score_percentile_table_dict():
     This function returns the z-score percentile table as a dictionary where the z-score is the key and the percentile is the value.
     example (first row in table): {-3.0: {'.00': 0.13, '.01': 0.13, [...]}, [...] }
     """
-    z_score_table = pd.read_csv('static_data/z_score_percentile_table.csv')
+    csv_file = get_static_data_file_path('z_score_percentile_table.csv')
+    z_score_table = pd.read_csv(csv_file)
     z_score_table.set_index('Z', inplace=True)
     return z_score_table.to_dict(orient='index')

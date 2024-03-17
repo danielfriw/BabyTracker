@@ -1,3 +1,5 @@
+import os
+
 from flask_login import current_user
 
 from main.blueprints.baby_blueprint.models import Baby
@@ -13,3 +15,11 @@ def baby_context_processor_for_navbar_dropdown_list():
         babies = Baby.query.filter_by(user_id=current_user.id).all()
         return {'babies': babies}
     return {}
+
+
+def get_static_data_file_path(file_name: str, static_folder: str, current_file_path):
+    """
+    This function returns the path of the static data file.
+    """
+    script_dir = os.path.dirname(os.path.abspath(current_file_path))
+    return os.path.join(script_dir, static_folder, file_name)

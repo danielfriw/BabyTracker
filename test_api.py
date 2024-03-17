@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 
 def make_api_get_call(url):

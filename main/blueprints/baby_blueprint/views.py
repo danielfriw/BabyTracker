@@ -36,7 +36,7 @@ def post_add_baby():
         flash(str(ve))
         return redirect(url_for('baby.get_add_baby'))
 
-    return redirect(url_for('index'))
+    return redirect(url_for('index.index'))
 
 
 

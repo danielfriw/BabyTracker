@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from flask_login import login_required, current_user
 
-from main import db
+from extensions import db
 from main.blueprints.events_blueprint.models import Event
 from main.blueprints.events_blueprint.services import event_not_found_error_message, \
     get_event_activity_from_index_buttons, get_event_by_id
@@ -29,7 +29,7 @@ def post_create_event():
                       comment=comment)
     db.session.add(new_event)
     db.session.commit()
-    return redirect(url_for('index'))
+    return redirect(url_for('index.index'))
 
 
 
@@ -51,7 +51,7 @@ def post_update_event(id):
         new_comment = request.form['comment']
         event.comment = new_comment
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('index.index'))
     except:
         flash(event_not_found_error_message())
 
@@ -63,6 +63,6 @@ def delete_event(id):
         event = get_event_by_id(id)
         db.session.delete(event)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('index.index'))
     except:
         flash(event_not_found_error_message())

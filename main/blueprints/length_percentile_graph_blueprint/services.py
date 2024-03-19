@@ -1,16 +1,14 @@
-import os
 from typing import Optional
 
 import pandas as pd
-import requests
-from flask import render_template, session, current_app, request
+from flask import render_template, session
 from flask_login import current_user
 from werkzeug.exceptions import NotFound
 
-from main import db
+from extensions import db
 from main.blueprints.length_percentile_graph_blueprint.models import LengthMeasurementsResults
-from main.utils.utils import get_static_data_file_path
 from main.utils.length_percentile_calculator.length_percentile_calculator import LengthPercentileCalculator
+from main.utils.utils import get_static_data_file_path
 
 
 def calculate_results_to_db(current_age_in_months, length):

@@ -1,7 +1,8 @@
 from flask import session
 from flask_login import current_user
 
-from main.blueprints.baby_blueprint.models import Baby, db
+from extensions import db
+from main.blueprints.baby_blueprint.models import Baby
 
 
 def set_baby_data_in_session(baby):

@@ -33,7 +33,7 @@ def post_login():
     except ValueError as ve:
         flash(str(ve))
         return redirect(url_for('auth.get_login'))
-    return redirect(url_for('index'))
+    return redirect(url_for('index.index'))
 
 
 @auth_blueprint.route('/register', methods=['GET'])
@@ -71,5 +71,5 @@ def logout():
     logout_user()
     remove_baby_data_from_session()
     flash('You have been logged out')
-    return redirect(url_for('index'))
+    return redirect(url_for('index.index'))
 

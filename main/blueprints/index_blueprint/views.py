@@ -1,7 +1,6 @@
 from flask import Blueprint, redirect, url_for
 from flask_login import login_required, current_user
 
-from main import app
 from main.blueprints.baby_blueprint.models import Baby
 from main.blueprints.baby_blueprint.services import set_baby_data_in_session
 from main.blueprints.index_blueprint.services import is_a_baby_assigned_to_session, does_user_have_babies, \
@@ -11,7 +10,7 @@ index_blueprint = Blueprint('index', __name__, url_prefix='/', static_folder='st
                             static_url_path='/main/blueprints/index_blueprint/static')
 
 
-@app.route('/')
+@index_blueprint.route('/')
 @login_required
 def index():
     if not does_user_have_babies():

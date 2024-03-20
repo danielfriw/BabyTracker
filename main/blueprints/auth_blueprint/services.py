@@ -1,6 +1,6 @@
 from flask import session
 
-from main import db
+from extensions import db
 from main.blueprints.auth_blueprint.models import User
 from main.blueprints.baby_blueprint.models import Baby
 

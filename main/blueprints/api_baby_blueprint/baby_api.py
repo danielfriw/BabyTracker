@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from flask_restful import Resource, Api
 
-from main import db
+from extensions import db
 from main.blueprints.api_baby_blueprint.services import get_baby_from_db_by_name, validate_baby_post_gender, \
     trasnfom_dob_to_date, validate_baby_post_name
 from main.blueprints.baby_blueprint.models import Baby

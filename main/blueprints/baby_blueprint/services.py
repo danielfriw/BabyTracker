@@ -5,16 +5,6 @@ from extensions import db
 from main.blueprints.baby_blueprint.models import Baby
 
 
-def set_baby_data_in_session(baby):
-    """
-    Add the baby information to the session, allowing for smooth transition between the web pages.
-    :param baby: Baby instance to be added to the session
-    """
-    session['baby_name'] = baby.name
-    session['baby_gender'] = baby.gender
-    session['baby_id'] = baby.id
-
-
 def add_baby_to_db(form):
     """
     Create a Baby instance from the form data, add it to the database, and set its data in the session.
@@ -38,7 +28,7 @@ def add_baby_to_db(form):
 
 def raise_error_if_invalid_baby_name(baby_name):
     """
-    Check if a baby's name contains only alphabetic characters.
+    Check if a baby's name contains only alphabetic characters and is unique for the current user.
     :param name: the baby's name to be validated
     :return: True if the name is valid, False otherwise
     """
@@ -53,7 +43,17 @@ def does_baby_name_already_exist_for_user(baby_name):
     Raise an error if the baby's name already exists for the current user.
     :param baby: Baby instance
     """
-    return baby_name == Baby.query.filter_by(user_id=current_user.id, name=baby_name).first()
+    return baby_name == Baby.query.filter_by(user_id=current_user.id, name=baby_name).first().name
+
+
+def set_baby_data_in_session(baby):
+    """
+    Add the baby information to the session, allowing for smooth transition between the web pages.
+    :param baby: Baby instance to be added to the session
+    """
+    session['baby_name'] = baby.name
+    session['baby_gender'] = baby.gender
+    session['baby_id'] = baby.id
 
 
 def get_baby_by_id(baby_id):

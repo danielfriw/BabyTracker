@@ -7,47 +7,58 @@ from flask import session, url_for
 from extensions import db
 from main.blueprints.baby_blueprint.models import Baby
 from main.blueprints.baby_blueprint.services import set_baby_data_in_session, add_baby_to_db, \
-    raise_error_if_invalid_baby_name, does_baby_name_already_exist_for_user, get_baby_by_id
+    raise_error_if_invalid_baby_name, does_baby_name_already_exist_for_user, get_baby_by_id, get_baby_by_name
 
 
-@patch('flask_login.login_required', lambda x: x)
 def test_get_add_baby(authenticated_client, app, captured_templates):
     with app.test_request_context():
         response = authenticated_client.get(url_for('baby.get_add_baby'), follow_redirects=True)
-        print([t for t in captured_templates])
+
         assert response.status_code == 200
-        # assert b"add_baby.html" in response.data
+        assert len(captured_templates) == 1
+        assert captured_templates[0][0].name == 'add_baby.html'
 
 
-# @patch('main.blueprints.baby_blueprint.forms.BabyForm.validate_on_submit', return_value=False)
-# @patch('flask_login.login_required', lambda x: x)
-# def test_post_add_baby_invalid_form(client, app):
-#     with app.test_request_context():
-#         response = client.post(url_for('baby.post_add_baby'), follow_redirects=True)
-#         assert response.status_code == 302
-#         assert b"add_baby.html" in response.data
+@patch('main.blueprints.baby_blueprint.views.BabyForm')
+def test_post_add_baby_invalid_form(mock_baby_form, authenticated_client, app, captured_templates):
+    mock_baby_form.return_value.validate_on_submit.return_value = False
+
+    with app.test_request_context():
+        response = authenticated_client.post(url_for('baby.post_add_baby'), follow_redirects=True)
+
+        assert response.status_code == 200
+        assert len(captured_templates) == 1
+        assert captured_templates[0][0].name == 'add_baby.html'
 
 
-# @patch('main.blueprints.baby_blueprint.services.add_baby_to_db')
-# @patch('main.blueprints.baby_blueprint.forms.BabyForm.validate_on_submit', return_value=True)
-# @patch('flask_login.login_required', lambda x: x)
-# def test_post_add_baby_valid_form(mock_add_baby_to_db, mock_validate, client, app):
-#     with app.test_request_context():
-#         response = client.post(url_for('baby.post_add_baby'))
-#         assert response.status_code == 302
-#         mock_add_baby_to_db.assert_called_once()
+@patch('main.blueprints.baby_blueprint.views.BabyForm')
+@patch('main.blueprints.baby_blueprint.views.add_baby_to_db')
+def test_post_add_baby_valid_form(mock_add_baby_to_db, mock_baby_form, authenticated_client, app, captured_templates):
+    mock_baby_form.return_value.validate_on_submit.return_value = True
+    mock_add_baby_to_db.return_value = None
+
+    with app.test_request_context():
+        response = authenticated_client.post(url_for('baby.post_add_baby'))
+
+        assert response.status_code == 302
+        mock_add_baby_to_db.assert_called_once()
+        assert response.location == url_for('index.index')
 
 
-# @patch('main.blueprints.baby_blueprint.services.set_baby_data_in_session')
-# @patch('main.blueprints.baby_blueprint.services.get_baby_by_id', return_value=True)
-# @patch('flask_login.login_required', lambda x: x)
-# def test_set_current_baby(mock_get_baby_by_id, mock_set_baby_data_in_session, client):
-#     baby_id = 1
-#     with app.test_request_context():
-#         response = client.get(url_for('baby.set_current_baby', baby_id=baby_id))
-#         assert response.status_code == 302
-#         mock_get_baby_by_id.assert_called_once_with(baby_id)
-#         mock_set_baby_data_in_session.assert_called_once()
+@patch('main.blueprints.baby_blueprint.views.set_baby_data_in_session')
+@patch('main.blueprints.baby_blueprint.views.get_baby_by_id')
+def test_set_current_baby(mock_get_baby_by_id, mock_set_baby_data_in_session, app, authenticated_client):
+    baby_id = 1
+    mock_get_baby_by_id.return_value = True
+    mock_set_baby_data_in_session.return_value = None
+
+    with app.test_request_context():
+        response = authenticated_client.get(url_for('baby.set_current_baby', baby_id=baby_id))
+
+        assert response.status_code == 302
+        mock_get_baby_by_id.assert_called_once_with(baby_id)
+        mock_set_baby_data_in_session.assert_called_once()
+
 
 @patch('main.blueprints.baby_blueprint.services.raise_error_if_invalid_baby_name')
 @patch('main.blueprints.baby_blueprint.services.current_user')
@@ -155,6 +166,22 @@ def test_get_baby_by_id(mock_current_user, app):
     with app.test_request_context():
         baby = create_baby_to_db('Emily')
         retrieved_baby = get_baby_by_id(baby.id)
+
+        assert retrieved_baby == baby
+
+@patch('main.blueprints.baby_blueprint.services.current_user')
+def test_get_baby_by_name(mock_current_user, app):
+    """
+    Test the function for getting a baby by its id.
+    :param mock_current_user: mock of the current_user object
+    :param app: app fixture
+    :return: assert the retrieved baby is the same as the created baby
+    """
+    mock_current_user.id = 1
+
+    with app.test_request_context():
+        baby = create_baby_to_db('Sammy')
+        retrieved_baby = get_baby_by_name(baby.name)
 
         assert retrieved_baby == baby
 

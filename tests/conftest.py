@@ -34,12 +34,11 @@ def user(app):
 
 @pytest.fixture
 def authenticated_client(client, user, app):
-    with client:
-        with app.app_context():
-            login_user(user)
-            yield client
+    with app.app_context(), app.test_request_context():
+        login_user(user)
+        yield client
 
-            logout_user()
+        logout_user()
 
 @pytest.fixture(scope='function')
 def captured_templates(app):
@@ -56,5 +55,6 @@ def captured_templates(app):
         yield recorded
     finally:
         template_rendered.disconnect(record, app)
+        recorded.clear()
 
 

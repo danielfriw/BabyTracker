@@ -91,16 +91,16 @@ def test_event_not_found_error_message():
     message = event_not_found_error_message()
     assert message == "Event not found."
 
-@patch('main.blueprints.events_blueprint.services.request')
+@patch('main.blueprints.events_blueprint.services.get_data_from_html_form')
 @patch('main.blueprints.events_blueprint.services.current_user')
-def test_create_new_event(mock_current_user,mock_request, authenticated_client, app):
+def test_create_new_event(mock_current_user,mock_get_comment_from_html_form, authenticated_client, app):
     """
     Test creating a new event and adding it to the database.
     """
 
     with app.test_request_context():
         activity = 'Feeding'
-        mock_request.form = {'comment': 'Test comment'}
+        mock_get_comment_from_html_form.return_value = 'Test comment'
         mock_current_user.id = 1
         session['baby_name'] = 'Mike'
 
@@ -113,7 +113,7 @@ def test_create_new_event(mock_current_user,mock_request, authenticated_client, 
         assert event.baby_name == 'Mike'
         assert event.comment == 'Test comment'
 
-@patch('main.blueprints.events_blueprint.services.get_comment_from_html_form')
+@patch('main.blueprints.events_blueprint.services.get_data_from_html_form')
 def test_update_event_data(mock_get_comment_from_html_form, app):
     """
     Test updating an event's comment.

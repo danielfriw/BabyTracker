@@ -51,7 +51,7 @@ purposes.
    ```
 5. Run the application:
    ```bash
-   flask run
+   python app.py
    ```
    The application will be accessible at `http://127.0.0.1:5000/`. Ensure that you have set the `FLASK_APP`
    and `FLASK_ENV` environment variables as described in the installation instructions.

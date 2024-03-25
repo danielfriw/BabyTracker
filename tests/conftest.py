@@ -1,7 +1,5 @@
-from contextlib import contextmanager
-
 import pytest
-from flask import template_rendered, session
+from flask import template_rendered
 from flask_login import login_user, logout_user
 
 from app import create_app
@@ -11,7 +9,7 @@ from main.blueprints.auth_blueprint.models import User
 
 @pytest.fixture(scope='function')
 def app():
-    app= create_app({'TESTING': True, 'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:'})
+    app = create_app({'TESTING': True, 'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:'})
     yield app
 
 
@@ -21,6 +19,7 @@ def client(app):
     Create a test client for the app.
     """
     return app.test_client()
+
 
 @pytest.fixture(scope='function')
 def user(app):
@@ -32,6 +31,7 @@ def user(app):
         db.session.delete(user)
         db.session.commit()
 
+
 @pytest.fixture
 def authenticated_client(client, user, app):
     with app.app_context(), app.test_request_context():
@@ -39,6 +39,7 @@ def authenticated_client(client, user, app):
         yield client
 
         logout_user()
+
 
 @pytest.fixture(scope='function')
 def captured_templates(app):
@@ -48,13 +49,13 @@ def captured_templates(app):
     :return: a list of tuples of the templates and contexts
     """
     recorded = []
+
     def record(sender, template, context, **extra):
         recorded.append((template, context))
+
     template_rendered.connect(record, app)
     try:
         yield recorded
     finally:
         template_rendered.disconnect(record, app)
         recorded.clear()
-
-

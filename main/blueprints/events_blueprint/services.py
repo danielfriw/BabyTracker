@@ -13,12 +13,14 @@ def event_not_found_error_message():
     """
     return "Event not found."
 
+
 def get_event_activity_from_index_buttons():
     """
     Get the activity from the index buttons (homepage).
     :return: activity
     """
     return request.args.get('activity')
+
 
 def create_new_event(activity):
     """
@@ -34,6 +36,7 @@ def create_new_event(activity):
     db.session.commit()
     pass
 
+
 def update_event_data(event):
     """
     Update an event's comment.
@@ -44,6 +47,7 @@ def update_event_data(event):
     event.comment = new_comment
     db.session.commit()
     pass
+
 
 def get_event_by_id(id):
     """

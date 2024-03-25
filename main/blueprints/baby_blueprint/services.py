@@ -66,6 +66,7 @@ def get_baby_by_id(baby_id):
     """
     return Baby.query.filter_by(id=baby_id, user_id=current_user.id).first()
 
+
 def get_baby_by_name(baby_name):
     """
     Retrieve a baby by name for the current user.

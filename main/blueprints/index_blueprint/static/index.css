@@ -108,7 +108,8 @@ body li {
 .alert {
     margin-top: 15vh;
 }
-.side_button_col{
+
+.side_button_col {
     display: flex;
     flex-direction: column;
     align-items: center;

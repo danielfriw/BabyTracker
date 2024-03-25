@@ -1,4 +1,4 @@
-from flask import Blueprint, request, flash
+from flask import Blueprint, flash
 from flask_login import login_required
 
 from main.blueprints.length_percentile_graph_blueprint.services import render_length_percentile_graph, \

@@ -169,6 +169,7 @@ def test_get_baby_by_id(mock_current_user, app):
 
         assert retrieved_baby == baby
 
+
 @patch('main.blueprints.baby_blueprint.services.current_user')
 def test_get_baby_by_name(mock_current_user, app):
     """

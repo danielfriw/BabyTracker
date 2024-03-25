@@ -17,15 +17,14 @@ def get_event_activity_from_index_buttons():
     Get the activity from the index buttons (homepage).
     :return: activity
     """
-    activity = request.args.get('activity')
-    return activity
+    return request.args.get('activity')
 
 def create_new_event(activity):
     """
     Create a new event and add it to the database.
     :param activity: the activity of the event
     """
-    comment = request.form['comment']
+    comment = get_comment_from_html_form()
     new_event = Event(activity=activity,
                       user_id=current_user.id,
                       baby_name=session['baby_name'],
@@ -40,7 +39,7 @@ def update_event_data(event):
     :param event: event instance
     :param new_comment: str
     """
-    new_comment = request.form['comment']
+    new_comment = get_comment_from_html_form()
     event.comment = new_comment
     db.session.commit()
     pass
@@ -53,3 +52,10 @@ def get_event_by_id(id):
     """
     event = Event.query.get_or_404(ident=id)
     return event
+
+def get_comment_from_html_form():
+    """
+    Get the comment from the form.
+    :return: str
+    """
+    return request.form['comment']

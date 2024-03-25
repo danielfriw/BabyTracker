@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from extensions import db
 from main.blueprints.events_blueprint.models import Event
 from main.blueprints.events_blueprint.services import event_not_found_error_message, \
-    get_event_activity_from_index_buttons, get_event_by_id, create_new_event, update_event_data
+    get_event_by_id, create_new_event, update_event_data, get_event_activity_from_index_buttons
 
 events_blueprint = Blueprint('events', __name__, url_prefix='/events', static_folder='static',
                              template_folder='templates')
@@ -48,7 +48,7 @@ def post_update_event(id):
     return redirect(url_for('index.index'))
 
 
-@events_blueprint.route('/delete/<id>', methods=['GET'])
+@events_blueprint.route('/delete_event/<id>', methods=['POST'])
 @login_required
 def delete_event(id):
     try:

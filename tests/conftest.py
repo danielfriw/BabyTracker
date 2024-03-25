@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 import pytest
-from flask import template_rendered
+from flask import template_rendered, session
 from flask_login import login_user, logout_user
 
 from app import create_app

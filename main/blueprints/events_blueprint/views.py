@@ -1,14 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, redirect, url_for, flash
+from flask_login import login_required
 
 from extensions import db
-from main.blueprints.events_blueprint.models import Event
 from main.blueprints.events_blueprint.services import event_not_found_error_message, \
     get_event_by_id, create_new_event, update_event_data, get_event_activity_from_index_buttons
 
 events_blueprint = Blueprint('events', __name__, url_prefix='/events', static_folder='static',
                              template_folder='templates')
-
 
 
 @events_blueprint.route('/create_event', methods=['GET'])
@@ -24,7 +22,6 @@ def post_create_event():
     activity = get_event_activity_from_index_buttons()
     create_new_event(activity)
     return redirect(url_for('index.index'))
-
 
 
 @events_blueprint.route('/update/<id>', methods=['GET'])

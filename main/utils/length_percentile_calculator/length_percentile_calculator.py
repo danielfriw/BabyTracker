@@ -20,7 +20,6 @@ class LengthPercentileCalculator:
         zscore = self.__calculate_zscore()
         return self.__extract_percentile_from_zscore_table(zscore)
 
-
     def __calculate_zscore(self):
         """
         This function calculates the z-score of a baby's length given the baby's age in months and length in cm.
@@ -40,7 +39,6 @@ class LengthPercentileCalculator:
 
         return (((self.length / m) ** l) - 1) / (l * s)
 
-
     def __get_lms_parameters_data_by_gender(self):
         """
         This function returns the LMS parameters depending on the gender of the baby.
@@ -51,7 +49,6 @@ class LengthPercentileCalculator:
             csv_file = get_static_data_file_path('lms_parameters_female.csv', 'static_data', __file__)
 
         return pd.read_csv(csv_file).to_dict()
-
 
     def __extract_percentile_from_zscore_table(self, zscore: float):
         """
@@ -68,7 +65,6 @@ class LengthPercentileCalculator:
         percentile = z_score_percentile_table_dict[z_row][z_col]
         return percentile
 
-
     def __extract_z_table_row(self, zscore: float) -> float:
         """
         This function extracts the row from the z-score to be used to find the percentile in the z-score percentile table.
@@ -80,7 +76,6 @@ class LengthPercentileCalculator:
         sign = -1 if zscore < 0 else 1
         return sign * float(str(abs(zscore))[:3])
 
-
     def __extract_z_table_col(self, zscore: float) -> str:
         """
         This function extracts the column from the z-score to be used to find the percentile in the z-score percentile table.
@@ -90,7 +85,6 @@ class LengthPercentileCalculator:
         @return: str: z_col
         """
         return '0.0' + str(abs(zscore))[3]
-
 
     def __get_z_score_percentile_table_dict(self):
         """

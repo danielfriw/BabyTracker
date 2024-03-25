@@ -39,8 +39,6 @@ def post_add_baby():
     return redirect(url_for('index.index'))
 
 
-
-
 @baby_blueprint.route('/set_current_baby/<int:baby_id>')
 @login_required
 def set_current_baby(baby_id):

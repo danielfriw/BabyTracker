@@ -21,6 +21,7 @@ def calculate_results_to_db(current_age_in_months, length):
     percentile_result = percentile_calculator.calculate_percentile()
     update_or_add_test_result_in_db(current_age_in_months, length, percentile_result)
 
+
 def update_or_add_test_result_in_db(age_in_months, length, percentile_result):
     """
     Update or add test results to the database.
@@ -100,9 +101,9 @@ def get_background_data_by_gender():
     Get percentile graph static background data based on the baby's gender.
     :return: A dictionary containing the background data (list of values) for the percentile graph.
             The dictionary contains the following keys:
-            - age_in_months: list of months
-            - ninty_eighth_percentile_length: list of 98th percentile values
-            - second_percentile_length: list of 2nd percentile values
+            - age_in_months: list of months (0-24)
+            - ninty_eighth_percentile_length: list of the 98th percentile length values (cm)
+            - second_percentile_length: list of the 2nd percentile length values (cm)
     """
     if session['baby_gender'] == 'm':
         csv_file = get_static_data_file_path('static_graph_background_data_male.csv', 'static_data', __file__)

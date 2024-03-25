@@ -72,4 +72,3 @@ def logout():
     remove_baby_data_from_session()
     flash('You have been logged out')
     return redirect(url_for('index.index'))
-

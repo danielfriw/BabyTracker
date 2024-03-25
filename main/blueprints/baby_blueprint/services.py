@@ -43,7 +43,9 @@ def does_baby_name_already_exist_for_user(baby_name):
     Raise an error if the baby's name already exists for the current user.
     :param baby: Baby instance
     """
-    return baby_name == Baby.query.filter_by(user_id=current_user.id, name=baby_name).first().name
+    if get_baby_by_name(baby_name):
+        return True
+    return False
 
 
 def set_baby_data_in_session(baby):
@@ -63,3 +65,11 @@ def get_baby_by_id(baby_id):
     :return: Baby instance or None if not found
     """
     return Baby.query.filter_by(id=baby_id, user_id=current_user.id).first()
+
+def get_baby_by_name(baby_name):
+    """
+    Retrieve a baby by name for the current user.
+    :param baby_name: The baby's name
+    :return: Baby instance or None if not found
+    """
+    return Baby.query.filter_by(user_id=current_user.id, name=baby_name).first()

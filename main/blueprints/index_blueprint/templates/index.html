@@ -36,15 +36,17 @@
                     </div>
                     <div class="column">{{ event.created_at }}</div>
                     <div class="column">{{ event.comment }}</div>
-                    <form method="get">
-                        <button class="side_button delete_button" type="submit"
-                                formaction="/events/delete/{{ event.id }}">Delete
-                        </button>
-                        <button class="side_button update_button" type="submit"
-                                formaction="/events/update/{{ event.id }}">Update
-                        </button>
-                    </form>
-                </li>
+                    <div class="side_button_col">
+                        <form method="get" action="/events/update/{{ event.id }}">
+                            <button class="side_button update_button" type="submit">Update</button>
+                        </form>
+                    </div>
+                    <div class="side_button_col">
+                        <form method="post" action="/events/delete_event/{{ event.id }}">
+                            <button class="side_button delete_button" type="submit">Delete</button>
+                        </form>
+                    </div>
+                                    </li>
             {% endfor %}
         </ul>
     {% else %}

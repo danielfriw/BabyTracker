@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from extensions import db
 from main.blueprints.events_blueprint.models import Event
 from main.blueprints.events_blueprint.services import event_not_found_error_message, \
-    get_event_activity_from_index_buttons, get_event_by_id
+    get_event_by_id, create_new_event, update_event_data, get_event_activity_from_index_buttons
 
 events_blueprint = Blueprint('events', __name__, url_prefix='/events', static_folder='static',
                              template_folder='templates')
@@ -22,13 +22,7 @@ def get_create_event():
 @login_required
 def post_create_event():
     activity = get_event_activity_from_index_buttons()
-    comment = request.form['comment']
-    new_event = Event(activity=activity,
-                      user_id=current_user.id,
-                      baby_name=session['baby_name'],
-                      comment=comment)
-    db.session.add(new_event)
-    db.session.commit()
+    create_new_event(activity)
     return redirect(url_for('index.index'))
 
 
@@ -38,9 +32,9 @@ def post_create_event():
 def get_update_event(id):
     try:
         event = get_event_by_id(id)
-        return render_template('update_event.html', event=event)
     except:
         flash(event_not_found_error_message())
+    return render_template('update_event.html', event=event)
 
 
 @events_blueprint.route('/update/<id>', methods=['POST'])
@@ -48,21 +42,19 @@ def get_update_event(id):
 def post_update_event(id):
     try:
         event = get_event_by_id(id)
-        new_comment = request.form['comment']
-        event.comment = new_comment
-        db.session.commit()
-        return redirect(url_for('index.index'))
+        update_event_data(event)
     except:
         flash(event_not_found_error_message())
+    return redirect(url_for('index.index'))
 
 
-@events_blueprint.route('/delete/<id>', methods=['GET'])
+@events_blueprint.route('/delete_event/<id>', methods=['POST'])
 @login_required
 def delete_event(id):
     try:
         event = get_event_by_id(id)
         db.session.delete(event)
         db.session.commit()
-        return redirect(url_for('index.index'))
     except:
         flash(event_not_found_error_message())
+    return redirect(url_for('index.index'))
